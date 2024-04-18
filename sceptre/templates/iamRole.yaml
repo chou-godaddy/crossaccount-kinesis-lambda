@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deploy the IAM Custom Role Service Catalog Product.
+Parameters:
+  RoleNameSuffix:
+    Type: String
+    Description: Name of custom Role appended to TeamName-custom-
+  AssumingServices:
+    Type: String
+    Description: Comma delimited list of Services that needs to assume the role (but marked as String)
+Resources:
+  IAMRole:
+    Type: AWS::ServiceCatalog::CloudFormationProvisionedProduct
+    Properties:
+      ProductName: IAMRole
+      ProvisioningArtifactName: 1.0.7
+      ProvisionedProductName: !Sub ${RoleNameSuffix}-role
+      ProvisioningParameters:
+        - Key: RoleNameSuffix
+          Value: !Ref RoleNameSuffix
+        - Key: ManagedPolicyArns
+          Value: !Join [ ",", [ !Sub "arn:aws:iam::${AWS::AccountId}:policy/GD-AWS-KMS-USER", !Sub "arn:aws:iam::${AWS::AccountId}:policy/GDDeployRoleAccessPolicy", !Sub "arn:aws:iam::${AWS::AccountId}:policy/AllowResourcesAccessToCloudWatchPolicy", "arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole", !Sub "arn:aws:iam::${AWS::AccountId}:policy/rg0-custom-entitlements-lambda-policy"]]
+        - Key: AssumingServices
+          Value: !Ref AssumingServices
+      Tags:
+        - Key: doNotShutDown
+          Value: "true"
+    DependsOn:
+      - IAMPolicy
+  IAMPolicy:
+    Type: AWS::ServiceCatalog::CloudFormationProvisionedProduct
+    Properties:
+      ProductName: IAMPolicy
+      ProvisioningArtifactName: 1.0.0
+      ProvisionedProductName: entitlements-lambda-policy
+      ProvisioningParameters:
+        - Key: PolicyNameSuffix
+          Value: entitlements-lambda-policy
+        - Key: PolicyJSON
+          Value: !Sub |
+            {
+               "Version": "2012-10-17",
+               "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:DescribeKey",
+                    "kms:Encrypt",
+                    "kms:ReEncrypt*",
+                    "kms:GenerateDataKey*"
+                  ],
+                  "Resource": "arn:aws:kms:us-west-2:669979021785:key/4ace0ac4-d73f-4fa7-918c-94eab1c3ba3f"
+                }
+              ]
+            }
+      Tags:
+        - Key: doNotShutDown
+          Value: "true"

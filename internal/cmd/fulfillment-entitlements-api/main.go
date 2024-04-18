@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"crossaccount-kinesis-lambda/internal/config"
-	"crossaccount-kinesis-lambda/internal/dependencies"
 	"flag"
+	"fulfillment-entitlements-api/internal/config"
+	"fulfillment-entitlements-api/internal/dependencies"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -17,9 +17,10 @@ type Producer struct {
 func (p *Producer) HandleRequest(ctx context.Context, kinesisEvent events.KinesisEvent) error {
 	dep := p.Dependencies
 	for _, record := range kinesisEvent.Records {
-		dep.Logger.Infof("received message from kinesis. partition key: %s", record.Kinesis.PartitionKey)
+		dep.GetLogger().Infof("received message from kinesis. partition key: %s", record.Kinesis.PartitionKey)
 		data := record.Kinesis.Data
-		dep.Logger.Infof("data: %v", data)
+		recordDataText := string(data)
+		dep.GetLogger().Infof("data: %v", recordDataText)
 	}
 
 	return nil

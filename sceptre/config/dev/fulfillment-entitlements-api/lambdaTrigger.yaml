@@ -1,0 +1,10 @@
+template_path: lambdaTrigger.yaml
+stack_name: entitlements-lambdaTrigger
+parameters:
+  EventSourceArn: 'arn:aws:kinesis:us-west-2:961515901445:stream/ecomm-entitlements-to-domains-ingest'
+  FunctionName: 'entitlements-api'
+  BatchSize: '1'
+  MaximumBatchingWindowInSeconds: '2'
+  StartingPosition: 'LATEST'
+dependencies:
+  - dev/fulfillment-entitlements-api/lambdaPermission.yaml

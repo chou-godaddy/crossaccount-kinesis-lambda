@@ -1,4 +1,4 @@
-module crossaccount-kinesis-lambda
+module fulfillment-entitlements-api
 
 go 1.21
 

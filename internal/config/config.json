@@ -1,5 +1,5 @@
 {
-    "apiName": "crossaccount-kinesis-lambda",
+    "apiName": "fulfillment-entitlements-api",
     "env": "{{.Env}}",
     "region": "{{.Region}}",
     "monitoring": {
@@ -45,7 +45,7 @@
       }
     },
     "logging": {
-      "app": "crossaccount-kinesis-lambda",
+      "app": "fulfillment-entitlements-api",
       "enabled": true,
       "level": "DEBUG",
       "json": true

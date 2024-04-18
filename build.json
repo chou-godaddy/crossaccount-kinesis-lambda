@@ -1,10 +1,10 @@
 {
     "main": [
-      "internal/cmd/crossaccount-kinesis-lambda/main.go"
+      "internal/cmd/fulfillment-entitlements-api/main.go"
     ],
     "release": {
       "type": "git",
-      "app-name": "crossaccount-kinesis-lambda",
+      "app-name": "fulfillment-entitlements-api",
       "team_prefix": "rg0",
       "project_code": "rg0",
       "tagging": {
@@ -16,9 +16,9 @@
       "builds": [
         {
           "type": "awslambda",
-          "name": "crossaccount-kinesis-lambda",
+          "name": "entitlements-api",
           "cgoEnabled": "1",
-          "entryPoint": "internal/cmd/crossaccount-kinesis-lambda/main.go",
+          "entryPoint": "internal/cmd/fulfillment-entitlements-api/main.go",
           "files": {
             "internal/config/config.json": "internal/config/config.json"
           },
@@ -36,9 +36,8 @@
               ],
               "timeout": "180",
               "hosted_zone": "fulfillment.domains.{env_dns}.aws.gdcld.net",
-              "memory_size": {
-                "prod": "256"
-              }
+              "lambda_custom_role": "entitlements-lambda-execution-role",
+              "skip_tests": true
             }
           ]
         }

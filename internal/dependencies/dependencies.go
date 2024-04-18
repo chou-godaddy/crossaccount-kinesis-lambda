@@ -2,7 +2,7 @@ package dependencies
 
 import (
 	"context"
-	"crossaccount-kinesis-lambda/internal/config"
+	"fulfillment-entitlements-api/internal/config"
 	"net/url"
 	"time"
 
@@ -16,12 +16,12 @@ import (
 
 // Dependencies encapsulates all dependencies to be carried through request processing.
 type Dependencies struct {
-	Config               *config.Config
-	HTTPPlain              httpclient.Client
-	HTTPWithClientCert     httpclient.Client
-	HTTPWithCertSSO        httpclient.Client
-	HTTPWithIAMSSO         httpclient.Client
-	Logger                 logging.Logger
+	Config             *config.Config
+	HTTPPlain          httpclient.Client
+	HTTPWithClientCert httpclient.Client
+	HTTPWithCertSSO    httpclient.Client
+	HTTPWithIAMSSO     httpclient.Client
+	Logger             logging.Logger
 }
 
 // Initialize takes the static dependencies and does any one-time setup
@@ -63,7 +63,7 @@ func (d *Dependencies) Initialize() error {
 // New constructs a new Dependencies, or panics on error
 func New(config *config.Config) *Dependencies {
 	return &Dependencies{
-		Config:               config,
+		Config: config,
 	}
 }
 
