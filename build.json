@@ -4,7 +4,7 @@
     ],
     "release": {
       "type": "git",
-      "app-name": "crossaccount-kinesis-lambda",
+      "app-name": "xaccount-kin-",
       "team_prefix": "rg0",
       "project_code": "rg0",
       "tagging": {
@@ -36,9 +36,8 @@
               ],
               "timeout": "180",
               "hosted_zone": "fulfillment.domains.{env_dns}.aws.gdcld.net",
-              "memory_size": {
-                "prod": "256"
-              }
+              "lambda_custom_role": "fulfillment-kinesis-consumer-role",
+              "skip_tests": true
             }
           ]
         }
