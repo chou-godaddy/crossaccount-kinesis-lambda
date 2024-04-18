@@ -1,0 +1,53 @@
+{
+    "apiName": "crossaccount-kinesis-lambda",
+    "env": "{{.Env}}",
+    "region": "{{.Region}}",
+    "monitoring": {
+      "enabled": true,
+      "APMSecret": "essp_apm_deployment"
+    },
+    "httpConfig": {
+      "MaxConnections": 100,
+      "TimeoutMs": 30000,
+      "APMEnabled": true
+    },
+    "server": {
+      "apiType": "LAMBDA"
+    },
+    "sso": {
+      "url": {{if eq .Env "dev"}}"https://sso.dev-godaddy.com"{{ else if eq .Env "dev-private"}}"https://sso.dev-godaddy.com"{{ else if eq .Env "test" }}"https://sso.test-godaddy.com"{{ else if eq .Env "prod" }}"https://sso.godaddy.com"{{ else if eq .Env "ote" }}"https://sso.ote-godaddy.com"{{ end }},
+      "expireLevel": 1,
+      "commonNames": {
+        "registrar.{{.Env}}.client.int.godaddy.com": "registrar services client cert"
+      },
+      "iamRoles": {
+        {{if eq .Env "dev-private"}}
+          "arn:aws:iam::846953831272:role/GD-AWS-USA-CPO-RG0-Dev-Private-PowerUser": "domains fulfillment dev-private deploy role"
+        {{else if eq .Env "dev"}}
+          "arn:aws:iam::982600293865:role/GD-AWS-USA-CPO-RG0-Dev-Deploy": "domains fulfillment dev deploy role"
+        {{else if eq .Env "test"}}
+          "arn:aws:iam::550131454132:role/GD-AWS-USA-CPO-RG0-Test-Deploy": "domains fulfillment test deploy role"
+        {{else if eq .Env "ote"}}
+          "arn:aws:iam::247530626458:role/GD-AWS-USA-CPO-RG0-OTE-Deploy": "domains fulfillment ote deploy role"
+        {{else if eq .Env "prod"}}
+          "arn:aws:iam::047150981913:role/GD-AWS-USA-CPO-RG0-Prod-Deploy": "domains fulfillment prod deploy role"
+        {{ end }}
+      },
+      "iamClientConfig": {
+        "ssoURL": {{if eq .Env "dev"}}"sso.dev-godaddy.com"{{ else if eq .Env "dev-private"}}"sso.dev-godaddy.com"{{ else if eq .Env "test" }}"sso.test-godaddy.com"{{ else if eq .Env "prod" }}"sso.godaddy.com"{{ else if eq .Env "ote" }}"sso.ote-godaddy.com"{{ end }},
+        "primaryRegion": {{if eq .Env "dev"}}"us-west-2"{{ else if eq .Env "dev-private" }}"us-west-2"{{ else if eq .Env "test" }}"us-west-2"{{ else if eq .Env "prod" }}"{{.Region}}"{{ else if eq .Env "ote" }}"{{.Region}}"{{ end }},
+        "secondaryRegions": [{{ if eq .Env "prod" }}{{ if eq .Region "us-west-2"}}"us-east-1"{{ else }}"us-west-2"{{ end }}{{ else if eq .Env "ote" }}{{ if eq .Region "us-west-2"}}"us-east-1"{{ else }}"us-west-2"{{ end }}{{ end }}]
+      },
+      "pkCacheConfig": {
+        "memcached": {
+            "clusterName": "sso-pk-cache"
+        }
+      }
+    },
+    "logging": {
+      "app": "crossaccount-kinesis-lambda",
+      "enabled": true,
+      "level": "DEBUG",
+      "json": true
+    }
+  }
